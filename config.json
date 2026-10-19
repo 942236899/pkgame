@@ -1,0 +1,13 @@
+{
+  "port": 8080,
+  "host": "0.0.0.0",
+  "db": {
+    "enabled": false,
+    "host": "127.0.0.1",
+    "port": 3306,
+    "user": "root",
+    "password": "",
+    "database": "tmh_poker"
+  },
+  "autoOpen": false
+}

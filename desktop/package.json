@@ -1,0 +1,51 @@
+{
+  "name": "pkgame-desktop",
+  "version": "1.0.0",
+  "description": "找队友扑克 · Windows 桌面客户端（内置联机服务器）",
+  "main": "main.js",
+  "scripts": {
+    "start": "npm run build:web && electron .",
+    "build:web": "node ../scripts/build-web.js --out desktop/web --server http://127.0.0.1:8080",
+    "pack": "npm run build:web && electron-builder --dir",
+    "dist": "npm run build:web && electron-builder --win --x64",
+    "dist:portable": "npm run build:web && electron-builder --win --x64 --config.win.target=portable"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.tmh.pkgame",
+    "productName": "找队友扑克",
+    "copyright": "TMH",
+    "files": [
+      "main.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../server",
+        "to": "server",
+        "filter": ["**/*", "!**/node_modules/.bin/**"]
+      },
+      {
+        "from": "web",
+        "to": "web",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": ["nsis", "portable"],
+      "artifactName": "找队友扑克-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "找队友扑克"
+    },
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    }
+  }
+}

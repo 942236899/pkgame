@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TMH-谁是队友</string>
+    <string name="title_activity_main">TMH-谁是队友</string>
+    <string name="package_name">com.tmh.whosteammate</string>
+    <string name="custom_url_scheme">com.tmh.whosteammate</string>
+</resources>

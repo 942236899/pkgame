@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TMH-谁是队友扑克游戏 · 服务器控制台</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:"Microsoft YaHei","PingFang SC",sans-serif; background:#f2f6f3; color:#16241c; font-size:14px; }
+    header { background:#14532d; background:linear-gradient(135deg,#14532d,#1f7a4d); color:#fff; padding:14px 20px; }
+    header .hd { max-width:1000px; margin:0 auto; }
+    header h1 { margin:0; font-size:17px; display:inline-block; }
+    header .ver { font-size:12px; opacity:.8; margin-left:8px; }
+    header .st { font-size:12.5px; background:rgba(255,255,255,.18); padding:4px 12px; border-radius:999px; float:right; margin-top:1px; }
+    header .st b { font-weight:400; }
+    .wrap { padding:16px 20px 40px; max-width:1000px; margin:0 auto; }
+    .card { background:#fff; border:1px solid #d7e3db; border-radius:12px; padding:14px 16px; margin-bottom:14px; box-shadow:0 2px 10px rgba(20,60,40,.06); }
+    .card h2 { margin:0 0 10px; font-size:14.5px; color:#14532d; }
+    label { display:inline-block; min-width:72px; color:#4a5b51; font-size:13px; }
+    input, select { padding:7px 10px; border:1px solid #d7e3db; border-radius:8px; font-size:13.5px; font-family:inherit; margin:3px 6px 3px 0; }
+    button { padding:8px 18px; border-radius:999px; border:1px solid #d7e3db; background:#fff; cursor:pointer; font-size:13.5px; font-family:inherit; font-weight:600; color:#16241c; }
+    button.primary { background:#1f7a4d; background:linear-gradient(180deg,#1f7a4d,#14532d); color:#fff; border-color:#14532d; }
+    button.danger { background:#fff; color:#a3231b; border-color:#e3b6b2; }
+    button[disabled] { opacity:.45; cursor:not-allowed; }
+    .addr { font-family:Consolas,monospace; background:#e6f2ea; border:1px dashed #1f7a4d; color:#14532d; padding:6px 12px; border-radius:8px; display:inline-block; margin:3px 6px 3px 0; }
+    .dot { width:9px; height:9px; border-radius:50%; background:#7ee2a8; display:inline-block; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th,td { border:1px solid #d7e3db; padding:5px 9px; text-align:left; }
+    th { background:#e6f2ea; color:#14532d; }
+    .hint { font-size:12px; color:#7b8b82; }
+    .row { margin-bottom:6px; }
+    .kv { display:inline-block; min-width:150px; margin:2px 10px 2px 0; font-size:13px; }
+    .kv b { color:#14532d; }
+    code { background:#f0f4f1; padding:1px 6px; border-radius:5px; }
+    #logs { background:#0f1f16; color:#b8e6c9; font-family:Consolas,monospace; font-size:12px; line-height:1.6; padding:10px 12px; border-radius:8px; height:200px; overflow:auto; white-space:pre-wrap; word-break:break-all; }
+    .ok { color:#1f7a4d; } .bad { color:#a3231b; }
+    .clearfix:after { content:""; display:block; clear:both; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="hd clearfix">
+      <h1>♦ TMH-谁是队友扑克游戏 · 服务器控制台</h1>
+      <span class="ver" id="ver"></span>
+      <span class="st"><span class="dot"></span> <b id="liveState">运行中</b></span>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      <h2>访问地址（手机 / 电脑浏览器打开即玩）</h2>
+      <div id="addrs" class="hint">读取中…</div>
+      <div style="margin-top:8px">
+        <button class="primary" onclick="location.href='/'">打开游戏大厅</button>
+        <span class="hint" style="margin-left:8px">局域网内其他设备用上面的局域网地址；公网需做端口映射。</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>运行状态</h2>
+      <div id="stat" class="hint">读取中…</div>
+    </div>
+
+    <div class="card">
+      <h2>在线房间 <span id="roomCount">0</span></h2>
+      <div id="rooms"><span class="hint">暂无房间</span></div>
+    </div>
+
+    <div class="card">
+      <h2>服务器设置</h2>
+      <div class="row">
+        <label>端口</label>
+        <input id="port" type="text" style="width:100px" value="8080">
+        <button onclick="savePort()">保存</button>
+        <span class="hint" id="portMsg">修改端口后需要重启服务器才会生效</span>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="danger" id="btnStop" onclick="stopServer()">停止服务器</button>
+        <span class="hint" id="stopHint"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>数据库（MySQL 8.0，可留空不启用）</h2>
+      <div style="margin-bottom:6px">
+        <label>启用</label>
+        <select id="dbEnabled" style="padding:7px 10px;border:1px solid #d7e3db;border-radius:8px;font-size:13.5px">
+          <option value="0">不启用</option>
+          <option value="1">启用 MySQL</option>
+        </select>
+        <span class="hint" id="dbState"></span>
+      </div>
+      <div class="row">
+        <span class="kv"><label>主机</label><input id="dbHost" style="width:130px" value="127.0.0.1"></span>
+        <span class="kv"><label style="min-width:0">端口</label><input id="dbPort" style="width:80px" value="3306"></span>
+      </div>
+      <div class="row">
+        <span class="kv"><label>用户名</label><input id="dbUser" style="width:130px" value="root"></span>
+        <span class="kv"><label style="min-width:0">密码</label><input id="dbPass" type="password" style="width:130px"></span>
+      </div>
+      <div class="row">
+        <span class="kv"><label>库名</label><input id="dbName" style="width:130px" value="tmh_poker"></span>
+      </div>
+      <div style="margin-top:8px">
+        <button onclick="dbTest()">测试连接</button>
+        <button class="primary" onclick="dbSave()">保存并应用</button>
+        <span class="hint" id="dbMsg"></span>
+      </div>
+      <div class="hint" style="margin-top:6px">建库：<code>CREATE DATABASE tmh_poker DEFAULT CHARSET utf8mb4;</code>（表会自动创建）</div>
+    </div>
+
+    <div class="card">
+      <h2>运行日志 <span class="hint">（最近 200 行，每 3 秒刷新）</span></h2>
+      <div id="logs">读取中…</div>
+    </div>
+
+    <div class="card">
+      <h2>运维提示</h2>
+      <div class="hint">
+        · 改端口：在上面的「服务器设置」里改 → 保存 → 重启服务器（或直接改 <code>server\config.json</code>）<br>
+        · 局域网：手机与本机连同一个 Wi-Fi，访问上面的局域网地址<br>
+        · 公网：把端口映射到公网（路由器端口转发 / 云服务器安全组放行），用 <code>http://公网IP:端口</code> 访问<br>
+        · 停止服务：点上面的「停止服务器」，或在启动它的黑窗口里按 Ctrl+C，或直接关闭窗口<br>
+        · 开机自启：用解压目录里的「设置开机自启.bat」（需要管理员权限）
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* 说明：这里刻意全部用 ES5 写法 —— Windows Server 2012 R2 自带的 IE11
+       没有 fetch / Promise / async，用现代写法会直接白屏。 */
+    function el(id) { return document.getElementById(id); }
+
+    function req(url, body, cb) {
+      var xhr = new XMLHttpRequest();
+      xhr.open(body ? 'POST' : 'GET', url, true);
+      if (body) xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) return;
+        var data = null;
+        try { data = JSON.parse(xhr.responseText); } catch (e) { data = { ok: false, msg: '返回数据异常' }; }
+        cb(data, xhr.status);
+      };
+      try { xhr.send(body ? JSON.stringify(body) : null); }
+      catch (e) { cb({ ok: false, msg: '请求失败：' + e.message }, 0); }
+    }
+
+    function fmtUptime(ms) {
+      var s = Math.floor(ms / 1000);
+      var d = Math.floor(s / 86400); s -= d * 86400;
+      var h = Math.floor(s / 3600); s -= h * 3600;
+      var m = Math.floor(s / 60); s -= m * 60;
+      if (d > 0) return d + ' 天 ' + h + ' 小时 ' + m + ' 分';
+      if (h > 0) return h + ' 小时 ' + m + ' 分';
+      if (m > 0) return m + ' 分 ' + s + ' 秒';
+      return s + ' 秒';
+    }
+
+    var isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost' || location.hostname === '::1';
+
+    function loadBasic() {
+      req('/api/lan', null, function (lan) {
+        if (!lan || !lan.ok) return;
+        var port = lan.port;
+        var all = ['127.0.0.1'].concat(lan.addresses || []);
+        var html = '';
+        for (var i = 0; i < all.length; i++) {
+          html += '<span class="addr">http://' + all[i] + ':' + port + '</span>';
+        }
+        el('addrs').innerHTML = html;
+      });
+
+      req('/api/status', null, function (s) {
+        if (!s || !s.ok) { el('liveState').innerHTML = '<span style="color:#ffd0cc">未连接</span>'; return; }
+        el('ver').textContent = 'v' + s.version;
+        el('liveState').textContent = '运行中';
+        el('stat').innerHTML =
+          '<span class="kv">已运行：<b>' + fmtUptime(Date.now() - s.startedAt) + '</b></span>' +
+          '<span class="kv">房间：<b>' + s.rooms + '</b></span>' +
+          '<span class="kv">在线玩家：<b>' + s.players + '</b></span>' +
+          '<span class="kv">已完成：<b>' + s.games + '</b> 局</span>' +
+          '<span class="kv">MySQL：<b>' + (s.db && s.db.enabled ? '已连接' : '未启用') + '</b></span>' +
+          '<span class="kv">运行方式：<b>' + (s.mode === 'electron' ? '窗口控制台' : 'Node 服务') + '</b></span>' +
+          '<span class="kv">Node：<b>' + s.node + '</b></span>' +
+          '<span class="kv">系统：<b>' + s.platform + '</b></span>';
+      });
+
+      req('/api/config', null, function (cfg) {
+        if (!cfg || !cfg.ok) return;
+        var c = cfg.config || {};
+        el('port').value = c.port || 8080;
+        var db = c.db || {};
+        el('dbEnabled').value = db.enabled ? '1' : '0';
+        el('dbHost').value = db.host || '';
+        el('dbPort').value = db.port || 3306;
+        el('dbUser').value = db.user || '';
+        el('dbName').value = db.database || '';
+        el('dbState').textContent = db.enabled ? '已启用' : '未启用';
+        el('dbState').className = 'hint ' + (db.enabled ? 'ok' : '');
+      });
+
+      req('/api/rooms', null, function (r) {
+        if (!r || !r.ok) return;
+        var list = r.rooms || [];
+        el('roomCount').textContent = list.length;
+        if (!list.length) { el('rooms').innerHTML = '<span class="hint">暂无房间</span>'; return; }
+        var h = '<table><tr><th>房间码</th><th>人数</th><th>座位</th><th>状态</th></tr>';
+        for (var i = 0; i < list.length; i++) {
+          var x = list[i], seats = [];
+          for (var j = 0; j < x.seats.length; j++) {
+            var s = x.seats[j];
+            seats.push(s ? (s.isAI ? '电脑' : s.name) : '空');
+          }
+          h += '<tr><td><b>' + x.code + '</b></td><td>' + x.players + '</td><td>' + seats.join(' / ') + '</td><td>' +
+            (x.started ? ('第 ' + x.round + ' 局 · ' + x.phase) : '等待开始') + '</td></tr>';
+        }
+        el('rooms').innerHTML = h + '</table>';
+      });
+
+      req('/api/logs', null, function (r) {
+        if (!r || !r.ok) return;
+        var box = el('logs');
+        var atBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 30;
+        box.textContent = (r.logs || []).join('\n') || '（暂无日志）';
+        if (atBottom) box.scrollTop = box.scrollHeight;
+      });
+    }
+
+    function savePort() {
+      var p = parseInt(el('port').value, 10);
+      if (!(p >= 1 && p <= 65535)) { el('portMsg').innerHTML = '<span class="bad">端口需为 1–65535</span>'; return; }
+      req('/api/port', { port: p }, function (r) {
+        el('portMsg').innerHTML = r.ok
+          ? '<span class="ok">已保存为 ' + p + '，重启服务器后生效</span>'
+          : '<span class="bad">' + (r.msg || '保存失败') + '</span>';
+      });
+    }
+
+    function stopServer() {
+      if (!confirm('确定要停止服务器吗？\n\n停止后所有在线玩家会掉线，需要重新启动才能继续。')) return;
+      req('/api/shutdown', {}, function (r) {
+        el('liveState').innerHTML = '<span style="color:#ffd0cc">已停止</span>';
+        el('stat').innerHTML = '<span class="hint">' + (r.msg || '服务器已停止') + '，可以关闭本页面。</span>';
+        el('addrs').innerHTML = '<span class="hint">服务器已停止。</span>';
+        el('logs').textContent += '\n[' + new Date().toLocaleTimeString() + '] 已通过网页控制台停止服务器';
+      });
+    }
+
+    function readDb(force) {
+      return {
+        enabled: force ? true : el('dbEnabled').value === '1',
+        host: el('dbHost').value,
+        port: parseInt(el('dbPort').value, 10) || 3306,
+        user: el('dbUser').value,
+        password: el('dbPass').value,
+        database: el('dbName').value
+      };
+    }
+    function dbTest() {
+      req('/api/db/test', readDb(true), function (r) {
+        el('dbMsg').innerHTML = (r.ok ? '<span class="ok">✓ ' : '<span class="bad">✗ ') + (r.msg || '') + '</span>';
+      });
+    }
+    function dbSave() {
+      req('/api/config', { db: readDb(false) }, function (r) {
+        el('dbMsg').innerHTML = (r.ok ? '<span class="ok">✓ ' : '<span class="bad">✗ ') + (r.msg || '') + '</span>';
+        el('dbState').textContent = el('dbEnabled').value === '1' ? '已启用' : '未启用';
+        loadBasic();
+      });
+    }
+
+    if (!isLocal) {
+      el('btnStop').disabled = true;
+      el('stopHint').textContent = '（只能在服务器本机停止）';
+    }
+
+    loadBasic();
+    setInterval(loadBasic, 3000);
+  </script>
+</body>
+
+</html>

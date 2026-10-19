@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#14532d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="TMH-谁是队友扑克游戏：4 人扑克，方块A 找方块3。手机、平板、电脑浏览器直接开局，无需安装。">
+  <meta name="apple-mobile-web-app-title" content="谁是队友">
+  <title>TMH-谁是队友扑克游戏</title>
+
+  <!-- 网页版 / 添加到主屏幕 -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <div id="app">
+    <!-- 顶栏 -->
+    <div class="topbar">
+      <div class="title"><span class="mini">♦️</span><span class="brand">TMH · </span>谁是队友</div>
+      <div class="tb-meta" id="metaInfo">第 1 局</div>
+      <div class="spacer"></div>
+      <button class="icon-btn" id="btnCounter" title="记牌器">🔢</button>
+      <button class="icon-btn" id="btnRule" title="规则">📖</button>
+      <button class="icon-btn" id="btnMenu" title="菜单">☰</button>
+    </div>
+
+    <!-- 牌桌：圆桌中央按座位分成四块，每人只占自己那一块 -->
+    <div class="table" id="table">
+      <div class="felt" id="felt">
+        <div class="side side-top">
+          <div class="seat" id="seat2"></div>
+          <div class="seat-pad" id="zone2"></div>
+        </div>
+        <div class="side side-left">
+          <div class="seat" id="seat3"></div>
+          <div class="seat-pad" id="zone3"></div>
+        </div>
+        <div class="side side-right">
+          <div class="seat" id="seat1"></div>
+          <div class="seat-pad" id="zone1"></div>
+        </div>
+        <div class="side side-self">
+          <div class="seat-pad" id="zone0"></div>
+        </div>
+        <div class="felt-tip"><span class="tip" id="centerTip"></span></div>
+      </div>
+    </div>
+
+    <!-- 底部：我 -->
+    <div class="bottom">
+      <!-- 轮到你出牌：贴着底部操作区上沿弹出，1.4 秒后自动收起 -->
+      <div id="turnBanner" class="turn-banner" hidden aria-live="assertive">
+        <div class="turn-card">
+          <div class="turn-ico">👉</div>
+          <div class="turn-main">
+            <div class="turn-title" id="turnTitle">轮到你出牌</div>
+            <div class="turn-sub" id="turnBannerSub">请选择要出的牌</div>
+          </div>
+        </div>
+      </div>
+      <div class="mybar" id="mybar"></div>
+      <div class="hand-wrap" id="handWrap">
+        <div class="hand" id="hand"></div>
+      </div>
+      <div class="actions" id="actions"></div>
+    </div>
+  </div>
+
+  <!-- 记牌器：常驻浮窗，可随时开关，不会被回合切换关闭 -->
+  <div id="counterPanel" class="counter-panel" hidden>
+    <div class="cp-head">
+      <span class="cp-title">🔢 记牌器</span>
+      <button class="cp-close" id="counterClose" type="button" title="关闭记牌器">×</button>
+    </div>
+    <div class="cp-body" id="counterBody"></div>
+  </div>
+
+  <!-- 竖屏提示：牌桌按横屏设计，手机竖着拿时提示转过来 -->
+  <div id="rotateHint" class="rotate-hint" hidden>
+    <div class="rh-card">
+      <div class="rh-phone">📱<span class="rh-arrow">↻</span></div>
+      <div class="rh-title">请把手机横过来</div>
+      <div class="rh-sub">牌桌按横屏布局：手牌更宽、牌更大、点牌更准</div>
+      <button class="btn ghost" id="rotateSkip" type="button">仍然竖屏游玩</button>
+    </div>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot"></div>
+
+  <script src="js/cards.js"></script>
+  <script src="js/combos.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/engine_ai.js"></script>
+  <script src="js/net.js"></script>
+  <script src="js/qr.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

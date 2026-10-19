@@ -1,0 +1,45 @@
+{
+  "name": "tmh-who-is-teammate",
+  "version": "1.4.2",
+  "description": "TMH-谁是队友扑克游戏 —— 网页 / Windows exe / 安卓 APK / iOS 四端",
+  "main": "main.js",
+  "scripts": {
+    "server": "node server/index.js",
+    "web": "node scripts/build-web.js",
+    "test": "node test.js && node smoke.js && node server/test-online.js",
+    "test:rules": "node test.js",
+    "test:ui": "node smoke.js",
+    "test:online": "node server/test-online.js",
+    "test:turns": "node server/test-turns.js",
+    "exe": "node scripts/build-web.js && node scripts/build-exe.js client && node scripts/build-server.js --no-web",
+    "exe:client": "node scripts/build-web.js && node scripts/build-exe.js client",
+    "exe:server": "node scripts/build-web.js && node scripts/build-server.js",
+    "android": "node scripts/build-web.js && node scripts/build-android.js",
+    "android:release": "node scripts/build-web.js && node scripts/build-android.js --release",
+    "android:env": "node scripts/bootstrap-android.js",
+    "ios": "node scripts/build-web.js && node scripts/build-ios.js",
+    "sync": "cap sync",
+    "legacy": "node scripts/build-server.js",
+    "exe:legacy": "node scripts/build-server.js",
+    "test:tribute": "node server/test-tribute.js",
+    "test:trustee": "node server/test-trustee.js"
+  },
+  "keywords": [
+    "poker",
+    "game",
+    "server",
+    "capacitor",
+    "electron"
+  ],
+  "author": "TMH",
+  "license": "ISC",
+  "devDependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/ios": "^8.5.3",
+    "@electron/asar": "^4.3.1",
+    "electron": "^44.9.0",
+    "electron-builder": "^26.15.3"
+  }
+}

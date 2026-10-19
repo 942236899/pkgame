@@ -1,0 +1,19 @@
+{
+  "appId": "com.tmh.whosteammate",
+  "appName": "TMH-谁是队友",
+  "webDir": "dist",
+  "loggingEnabled": false,
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true,
+    "webContentsDebuggingEnabled": true
+  },
+  "ios": {
+    "contentInset": "always",
+    "scheme": "TMH-谁是队友"
+  },
+  "plugins": {}
+}

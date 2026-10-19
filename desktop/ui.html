@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>TMH-谁是队友扑克游戏 · 服务器控制台</title>
+  <style>
+    :root {
+      --green: #1f7a4d;
+      --green-d: #14532d;
+      --green-l: #e6f2ea;
+      --gold: #d9a441;
+      --ink: #16241c;
+      --ink2: #4a5b51;
+      --ink3: #7b8b82;
+      --line: #d7e3db;
+      --bg: #f2f6f3;
+      --danger: #d64545;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 14px;
+      user-select: none;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--green-d), var(--green));
+      color: #fff;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .lg {
+      font-size: 24px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: .5px;
+    }
+
+    header .sp {
+      flex: 1;
+    }
+
+    header .st {
+      font-size: 12.5px;
+      background: rgba(255, 255, 255, .18);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .wrap {
+      padding: 16px 20px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(20, 60, 40, .06);
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 14.5px;
+      color: var(--green-d);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    label {
+      min-width: 76px;
+      color: var(--ink2);
+      font-size: 13px;
+    }
+
+    input,
+    select {
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-family: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    input[type=text],
+    input[type=number],
+    input[type=password] {
+      min-width: 150px;
+    }
+
+    button {
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 13.5px;
+      font-family: inherit;
+      font-weight: 600;
+    }
+
+    button:active {
+      transform: scale(.97);
+    }
+
+    button.primary {
+      background: linear-gradient(180deg, var(--green), var(--green-d));
+      color: #fff;
+      border-color: var(--green-d);
+    }
+
+    button.danger {
+      color: var(--danger);
+      border-color: #f0c0c0;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: default;
+    }
+
+    .addr {
+      font-family: Consolas, ui-monospace, monospace;
+      background: var(--green-l);
+      border: 1px dashed var(--green);
+      color: var(--green-d);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      margin: 3px 6px 3px 0;
+      display: inline-block;
+      user-select: text;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #bbb;
+      display: inline-block;
+    }
+
+    .dot.on {
+      background: #2a9060;
+      box-shadow: 0 0 0 3px rgba(42, 144, 96, .2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 5px 9px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--green-l);
+      color: var(--green-d);
+      font-size: 12.5px;
+    }
+
+    #log {
+      height: 190px;
+      overflow-y: auto;
+      background: #16241c;
+      color: #b9e6cd;
+      font-family: Consolas, ui-monospace, monospace;
+      font-size: 12.5px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      line-height: 1.6;
+      user-select: text;
+      white-space: pre-wrap;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--ink3);
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 16px;
+    }
+
+    .tag {
+      font-size: 11.5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--green-l);
+      color: var(--green-d);
+    }
+
+    .tag.off {
+      background: #f0f0f0;
+      color: #999;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--ink3);
+      font-size: 12px;
+      padding: 6px 0 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <span class="lg">♦️</span>
+    <h1>TMH-谁是队友扑克游戏 · 服务器</h1>
+    <span class="sp"></span>
+    <span class="st"><span class="dot" id="dot"></span> <span id="stateText">未启动</span></span>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      <h2>🚀 服务控制</h2>
+      <div class="row">
+        <label>端口</label>
+        <input type="number" id="port" value="8080" style="width:110px">
+        <button class="primary" id="btnStart">启动服务器</button>
+        <button class="danger" id="btnStop" disabled>停止</button>
+        <button id="btnOpen">在浏览器打开</button>
+        <span class="hint" id="uptime"></span>
+      </div>
+      <div class="row" style="margin-bottom:0">
+        <label>访问地址</label>
+        <span id="addrs" class="hint">启动后显示</span>
+      </div>
+      <div class="row" id="noticeRow" style="margin:8px 0 0;display:none">
+        <span id="notice" style="font-size:12.5px;color:#c0392b;line-height:1.7"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🏠 在线房间 <span class="tag" id="roomCount">0</span></h2>
+      <div id="rooms"><span class="hint">暂无房间</span></div>
+    </div>
+
+    <div class="card">
+      <h2>🗄️ 数据库（MySQL 8.0，可留空不启用）</h2>
+      <div class="row">
+        <label>启用</label>
+        <select id="dbEnabled">
+          <option value="0">不启用（仅内存，不落库）</option>
+          <option value="1">启用 MySQL</option>
+        </select>
+        <span class="hint" id="dbState"></span>
+      </div>
+      <div class="grid2">
+        <div class="row"><label>主机</label><input type="text" id="dbHost" value="127.0.0.1"></div>
+        <div class="row"><label>端口</label><input type="number" id="dbPort" value="3306"></div>
+        <div class="row"><label>用户名</label><input type="text" id="dbUser" value="root"></div>
+        <div class="row"><label>密码</label><input type="password" id="dbPass"></div>
+        <div class="row"><label>库名</label><input type="text" id="dbName" value="tmh_poker"></div>
+      </div>
+      <div class="row" style="margin-bottom:0">
+        <button id="btnDbTest">测试连接</button>
+        <button class="primary" id="btnDbSave">保存并应用</button>
+        <span class="hint" id="dbMsg"></span>
+      </div>
+      <div class="row" style="margin-top:8px;margin-bottom:0">
+        <span class="hint">启用后需先建库：<code>CREATE DATABASE tmh_poker DEFAULT CHARSET utf8mb4;</code>（表会自动创建）</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📜 运行日志</h2>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <footer>TMH-谁是队友扑克游戏 · 服务器控制台 v1.0 · 局域网 / 公网均可部署</footer>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+    const $ = id => document.getElementById(id);
+
+    function logLine(s) {
+      const box = $('log');
+      box.textContent += s + '\n';
+      box.scrollTop = box.scrollHeight;
+    }
+    ipcRenderer.on('log', (e, s) => logLine(s));
+
+    ipcRenderer.invoke('get-config').then(cfg => {
+      $('port').value = cfg.port || 8080;
+      const db = cfg.db || {};
+      $('dbEnabled').value = db.enabled ? '1' : '0';
+      $('dbHost').value = db.host || '127.0.0.1';
+      $('dbPort').value = db.port || 3306;
+      $('dbUser').value = db.user || 'root';
+      $('dbPass').value = db.password || '';
+      $('dbName').value = db.database || 'tmh_poker';
+      $('dbState').textContent = db.enabled ? '已启用' : '未启用';
+    });
+
+    ipcRenderer.invoke('get-addrs').then(list => {
+      if (!list.length) { $('addrs').textContent = '未检测到局域网地址'; return; }
+      $('addrs').innerHTML = list.map(a => '<span class="addr">http://' + a + ':' + $('port').value + '</span>').join('');
+    });
+
+    $('btnStart').onclick = async () => {
+      const port = Number($('port').value) || 8080;
+      $('noticeRow').style.display = 'none';
+      const r = await ipcRenderer.invoke('start', { port });
+      if (!r.ok) {
+        $('noticeRow').style.display = '';
+        $('notice').textContent = '⚠ ' + r.msg;
+        logLine('启动失败：' + r.msg);
+        return;
+      }
+      setState(true, !!r.external);
+      if (r.external) {
+        $('noticeRow').style.display = '';
+        $('notice').textContent = 'ℹ 端口 ' + port + ' 上已有一个本游戏服务器在运行，控制台已连接它（只读）。如果要独立控制，请换一个端口后重启。';
+      }
+      $('addrs').innerHTML = (r.addresses || []).map(a => '<span class="addr">http://' + a + ':' + port + '</span>').join('') ||
+        '<span class="addr">http://127.0.0.1:' + port + '</span>';
+    };
+    $('btnStop').onclick = async () => {
+      const r = await ipcRenderer.invoke('stop');
+      setState(false);
+      if (r && r.msg) logLine(r.msg);
+      logLine('服务器已停止');
+    };
+    $('btnOpen').onclick = async () => {
+      const r = await ipcRenderer.invoke('open-browser');
+      if (r && !r.ok) {
+        $('noticeRow').style.display = '';
+        $('notice').textContent = '⚠ ' + r.msg;
+        logLine(r.msg);
+      }
+    };
+
+    $('btnDbTest').onclick = async () => {
+      const r = await ipcRenderer.invoke('db-test', readDb(true));
+      $('dbMsg').textContent = (r.ok ? '✅ ' : '❌ ') + r.msg;
+      logLine('数据库测试：' + r.msg);
+    };
+    $('btnDbSave').onclick = async () => {
+      const r = await ipcRenderer.invoke('db-save', readDb(false));
+      $('dbMsg').textContent = (r.ok ? '✅ ' : '❌ ') + r.msg;
+      $('dbState').textContent = $('dbEnabled').value === '1' ? '已启用' : '未启用';
+      logLine('数据库配置：' + r.msg);
+    };
+
+    function readDb(forceEnabled) {
+      return {
+        enabled: forceEnabled ? true : $('dbEnabled').value === '1',
+        host: $('dbHost').value,
+        port: Number($('dbPort').value) || 3306,
+        user: $('dbUser').value,
+        password: $('dbPass').value,
+        database: $('dbName').value
+      };
+    }
+
+    function setState(on, ext) {
+      $('dot').className = 'dot' + (on ? ' on' : '');
+      $('stateText').textContent = on ? (ext ? '运行中 · 复用已有实例' : '运行中') : '未启动';
+      $('btnStart').disabled = on;
+      $('btnStop').disabled = !on || !!ext;
+      $('port').disabled = on;
+    }
+
+    let booted = false;
+    async function tick() {
+      let s = {};
+      try { s = await ipcRenderer.invoke('status'); } catch (e) { }
+      if (s.running && !booted) {
+        booted = true;
+        setState(true, !!s.external);
+        const list = await ipcRenderer.invoke('get-addrs');
+        $('addrs').innerHTML = (list || []).map(a => '<span class="addr">http://' + a + ':' + $('port').value + '</span>').join('') ||
+          '<span class="addr">http://127.0.0.1:' + $('port').value + '</span>';
+      }
+      if (!s.running && booted) { booted = false; setState(false); }
+      if (s.running) {
+        $('uptime').textContent = '已运行 ' + Math.floor((Date.now() - s.startedAt) / 1000) +
+          ' 秒 · 在线玩家 ' + s.players + ' · 已完成 ' + s.games + ' 局 · MySQL ' + (s.db && s.db.enabled ? '已连接' : '未启用');
+        $('roomCount').textContent = s.rooms;
+        $('rooms').innerHTML = s.roomList && s.roomList.length
+          ? '<table><tr><th>房间码</th><th>人数</th><th>座位</th><th>状态</th></tr>' +
+          s.roomList.map(r => '<tr><td><b>' + r.code + '</b></td><td>' + r.players + '</td><td>' +
+            r.seats.map(x => x ? (x.isAI ? '电脑' : x.name) : '空').join(' / ') + '</td><td>' +
+            (r.started ? ('第 ' + r.round + ' 局 · ' + r.phase) : '等待开始') + '</td></tr>').join('') + '</table>'
+          : '<span class="hint">暂无房间</span>';
+      }
+      setTimeout(tick, 1500);
+    }
+    tick();
+  </script>
+</body>
+
+</html>
