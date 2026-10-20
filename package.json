@@ -32,7 +32,7 @@
     "electron"
   ],
   "author": "TMH",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@capacitor/android": "^8.5.3",
     "@capacitor/cli": "^8.5.3",
